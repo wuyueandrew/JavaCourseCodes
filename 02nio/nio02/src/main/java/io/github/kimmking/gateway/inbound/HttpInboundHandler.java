@@ -1,5 +1,7 @@
 package io.github.kimmking.gateway.inbound;
 
+import io.github.kimmking.gateway.filter.HttpRequestFilter;
+import io.github.kimmking.gateway.outbound.OutboundHandler;
 import io.github.kimmking.gateway.outbound.httpclient4.HttpOutboundHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -8,15 +10,28 @@ import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.ServiceLoader;
+
 public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
 
     private static Logger logger = LoggerFactory.getLogger(HttpInboundHandler.class);
-    private final String proxyServer;
-    private HttpOutboundHandler handler;
+    private final ProxyServerInfo proxyServerInfo;
+    private OutboundHandler handler;
     
-    public HttpInboundHandler(String proxyServer) {
-        this.proxyServer = proxyServer;
-        handler = new HttpOutboundHandler(this.proxyServer);
+    public HttpInboundHandler(ProxyServerInfo proxyServerInfo) {
+        this.proxyServerInfo = proxyServerInfo;
+        ServiceLoader<OutboundHandler> outboundHandlers = ServiceLoader.load(OutboundHandler.class);
+        outboundHandlers.forEach(outboundHandler -> handler = handler != null ? handler : outboundHandler);
+        if (handler == null) {
+            throw new RuntimeException("handler non null!");
+        }
+        List<HttpRequestFilter> fts = new ArrayList<>();
+        ServiceLoader<HttpRequestFilter> filters = ServiceLoader.load(HttpRequestFilter.class);
+        filters.iterator().forEachRemaining(fts::add);
+        handler.init(proxyServerInfo, fts.toArray(new HttpRequestFilter[0]));
     }
     
     @Override
@@ -40,7 +55,7 @@ public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            ReferenceCountUtil.release(msg);
+//            ReferenceCountUtil.release(msg);
         }
     }
 

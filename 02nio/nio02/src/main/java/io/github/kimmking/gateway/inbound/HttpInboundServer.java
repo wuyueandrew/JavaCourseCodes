@@ -19,11 +19,11 @@ public class HttpInboundServer {
 
     private int port;
     
-    private String proxyServer;
+    private ProxyServerInfo proxyServerInfo;
 
-    public HttpInboundServer(int port, String proxyServer) {
-        this.port=port;
-        this.proxyServer = proxyServer;
+    public HttpInboundServer(int port, ProxyServerInfo proxyServerInfo) {
+        this.port = port;
+        this.proxyServerInfo = proxyServerInfo;
     }
 
     public void run() throws Exception {
@@ -44,7 +44,7 @@ public class HttpInboundServer {
                     .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
 
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
-                    .handler(new LoggingHandler(LogLevel.INFO)).childHandler(new HttpInboundInitializer(this.proxyServer));
+                    .handler(new LoggingHandler(LogLevel.INFO)).childHandler(new HttpInboundInitializer(this.proxyServerInfo));
 
             Channel ch = b.bind(port).sync().channel();
             logger.info("开启netty http服务器，监听地址和端口为 http://127.0.0.1:" + port + '/');

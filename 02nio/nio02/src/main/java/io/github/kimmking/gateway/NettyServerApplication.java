@@ -2,6 +2,7 @@ package io.github.kimmking.gateway;
 
 
 import io.github.kimmking.gateway.inbound.HttpInboundServer;
+import io.github.kimmking.gateway.inbound.ProxyServerInfo;
 
 public class NettyServerApplication {
     
@@ -16,8 +17,10 @@ public class NettyServerApplication {
           //  http://localhost:8088/api/hello  ==> backend service
     
         int port = Integer.parseInt(proxyPort);
+        ProxyServerInfo proxyServerInfo = new ProxyServerInfo(proxyServer, "localhost", 8088);
+
         System.out.println(GATEWAY_NAME + " " + GATEWAY_VERSION +" starting...");
-        HttpInboundServer server = new HttpInboundServer(port, proxyServer);
+        HttpInboundServer server = new HttpInboundServer(port, proxyServerInfo);
         System.out.println(GATEWAY_NAME + " " + GATEWAY_VERSION +" started at http://localhost:" + port + " for server:" + proxyServer);
         try {
             server.run();

@@ -1,0 +1,2 @@
+#io.github.kimmking.gateway.outbound.httpclient.HomeworkHttpOutboundHandler
+io.github.kimmking.gateway.outbound.netty4.HomeworkNettyOutboundHandler
