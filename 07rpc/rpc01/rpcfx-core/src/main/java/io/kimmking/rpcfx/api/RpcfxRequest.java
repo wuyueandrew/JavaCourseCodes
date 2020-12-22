@@ -2,11 +2,13 @@ package io.kimmking.rpcfx.api;
 
 public class RpcfxRequest {
 
-  private String serviceClass;
+    private String requestId;
 
-  private String method;
+    private String serviceClass;
 
-  private Object[] params;
+    private String method;
+
+    private Object[] params;
 
     public String getServiceClass() {
         return serviceClass;
@@ -30,5 +32,13 @@ public class RpcfxRequest {
 
     public void setParams(Object[] params) {
         this.params = params;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }

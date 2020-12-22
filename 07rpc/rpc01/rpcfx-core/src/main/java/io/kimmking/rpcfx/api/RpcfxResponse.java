@@ -2,6 +2,8 @@ package io.kimmking.rpcfx.api;
 
 public class RpcfxResponse {
 
+    private String requestId;
+
     private Object result;
 
     private boolean status;
@@ -31,4 +33,13 @@ public class RpcfxResponse {
     public void setException(Exception exception) {
         this.exception = exception;
     }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
 }

@@ -1,0 +1,5 @@
+rpc:
+  api:
+    package: io.kimmking.rpcfx.demo.api
+  server:
+    url: http://localhost:8080/
